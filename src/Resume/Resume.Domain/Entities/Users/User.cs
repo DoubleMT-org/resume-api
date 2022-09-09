@@ -13,13 +13,13 @@ namespace Resume.Domain.Entities.Users
     {
         [MaxLength(32), Required]
         public string FirstName { get; set; }
-        
+
         [MaxLength(32), Required]
         public string LastName { get; set; }
-        
+
         [MaxLength(64), Required]
         public string Email { get; set; }
-        
+
         [MaxLength(16), Required]
         public string Phone { get; set; }
 

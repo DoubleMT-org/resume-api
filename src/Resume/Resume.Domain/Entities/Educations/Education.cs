@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Resume.Domain.Entities.Educations;
 public class Education : Auditable<long>
-{ 
+{
     [MaxLength(32)]
     public string Name { get; set; }
     public string Description { get; set; }
@@ -12,7 +12,7 @@ public class Education : Auditable<long>
 
     [MaxLength(32)]
     public string Faculty { get; set; }
-   
+
     [MaxLength(32)]
     public string Location { get; set; }
 
