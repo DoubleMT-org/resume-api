@@ -8,7 +8,6 @@ using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
 using Resume.Service.Interfaces;
 using System.Linq.Expressions;
-using System.Net.Http.Headers;
 
 namespace Resume.Service.Services;
 public class SocialMediaService : ISocialMediaService
@@ -72,13 +71,13 @@ public class SocialMediaService : ISocialMediaService
     public async ValueTask<SocialMedia> UpdateAsync(long id, SocialMediaForCreationDto socialMedia)
     {
         SocialMedia existSocialMedia = await unitOfWork.SocialMedias.GetAsync(sm => sm.Id == id
-                                                                              && sm.State != Domain.Enums.EntityState.Deleted );
+                                                                              && sm.State != Domain.Enums.EntityState.Deleted);
 
         if (existSocialMedia is not null)
             throw new EventException(404, "Social media not found");
 
         SocialMedia checkedSocialMedia = await unitOfWork.SocialMedias.GetAsync(sm => sm.Name == socialMedia.Name
-                                                                                || sm.Url == socialMedia.Url 
+                                                                                || sm.Url == socialMedia.Url
                                                                                 && sm.State != Domain.Enums.EntityState.Deleted);
 
         if (checkedSocialMedia is not null)
@@ -86,7 +85,7 @@ public class SocialMediaService : ISocialMediaService
 
         var mappedSocialMedia = socialMedia.Adapt(existSocialMedia);
         mappedSocialMedia.Update();
-        
+
         unitOfWork.SocialMedias.Update(mappedSocialMedia);
         await unitOfWork.SaveChangesAsync();
 

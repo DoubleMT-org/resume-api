@@ -42,7 +42,7 @@ namespace Resume.Service.Extentions
                 ErrorMessage = "Password should be contain at least one numeric value.";
                 return false;
             }
-            
+
             return true;
         }
 

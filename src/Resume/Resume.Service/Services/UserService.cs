@@ -31,7 +31,7 @@ namespace Resume.Service.Services
 
             if (existUser is null)
                 throw new EventException(404, "This email or phone is not exists");
-            
+
             else if (dto.NewPassword != dto.ComfirmPassword)
                 throw new EventException(400, "New password and comfirm password is not equal");
 
@@ -50,7 +50,7 @@ namespace Resume.Service.Services
         public async ValueTask<User> CheckLoginAsync(UserForLoginDto dto)
         {
             User existUser = await unitOfWork.Users.GetAsync
-                (user => user.Email == dto.EmailOrPhone 
+                (user => user.Email == dto.EmailOrPhone
                 || user.Phone == dto.EmailOrPhone
                 && user.State != State.Deleted);
 
@@ -70,7 +70,7 @@ namespace Resume.Service.Services
 
             if (existUser is not null)
                 throw new EventException(400, "This email is already registered!");
-            
+
             else if (!user.Password.IsValidPassword(out string errorMessage))
                 throw new EventException(400, errorMessage);
 
