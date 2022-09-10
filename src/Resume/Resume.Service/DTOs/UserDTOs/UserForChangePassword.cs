@@ -19,5 +19,7 @@ namespace Resume.Service.DTOs.UserDTOs
         [MaxLength(15, ErrorMessage = "New password must not be less 15!")]
         [Required(ErrorMessage = "New password must not be null or empty!")]
         public string NewPassword { get; set; }
+
+        public string ComfirmPassword { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Resume.Service.DTOs.CompanyDTOs
 {
+    //IFormFile Settings
     public class CompanyForCreationDto
     {
         [MaxLength(32, ErrorMessage = "FirstName must be less than 32!")]
