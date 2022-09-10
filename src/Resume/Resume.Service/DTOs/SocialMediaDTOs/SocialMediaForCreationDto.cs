@@ -2,7 +2,7 @@
 
 namespace Resume.Service.DTOs.SocialMediaDTOs
 {
-    public class SocialMediaDTOs
+    public class SocialMediaForCreationDto
     {
         [MaxLength(32, ErrorMessage = "Name must be less than 32!")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Name must not be null or empty!")]

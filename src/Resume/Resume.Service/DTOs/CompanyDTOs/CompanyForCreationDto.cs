@@ -2,14 +2,14 @@
 
 namespace Resume.Service.DTOs.CompanyDTOs
 {
-    public class CompanyDTOs
+    public class CompanyForCreationDto
     {
         [MaxLength(32, ErrorMessage = "FirstName must be less than 32!")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "FirstName must not be null or empty!")]
         public string Name { get; set; }
 
         public string Description { get; set; }
-        
+
         [Required(AllowEmptyStrings = false, ErrorMessage = "Duration must not be null or empty!")]
         public string Duration { get; set; }
 

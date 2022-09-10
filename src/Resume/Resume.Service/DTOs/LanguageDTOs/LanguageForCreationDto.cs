@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Resume.Service.DTOs.SkillDTOs
+namespace Resume.Service.DTOs.LanguageDTOs
 {
-    public class SkillDTOs
+    public class LanguageForCreationDto
     {
         [MaxLength(32, ErrorMessage = "Name must be less than 32!")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Name must not be null or empty!")]
@@ -10,6 +10,5 @@ namespace Resume.Service.DTOs.SkillDTOs
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Persantage must not be null or empty!")]
         public int Persantage { get; set; }
-
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Resume.Service.DTOs.EducationDTOs
 {
-    public class EducationDTOs
+    public class EducationForCreationDto
     {
         [MaxLength(32, ErrorMessage = "Name must be less than 32!")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Name must not be null or empty!")]
