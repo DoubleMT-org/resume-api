@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Resume.Data\Resume.Data.csproj" />
     <ProjectReference Include="..\Resume.Domain\Resume.Domain.csproj" />
   </ItemGroup>

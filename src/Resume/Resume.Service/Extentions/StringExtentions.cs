@@ -39,14 +39,11 @@ namespace Resume.Service.Extentions
             }
             else if (!hasNumber.IsMatch(input))
             {
-                ErrorMessage = "Password should contain at least one numeric value.";
+                ErrorMessage = "Password should be contain at least one numeric value.";
                 return false;
             }
-            else
-            {
-                ErrorMessage = "Successully registered";
-                return true;
-            }
+            
+            return true;
         }
 
         public static string GetHashVersion(this string password)
