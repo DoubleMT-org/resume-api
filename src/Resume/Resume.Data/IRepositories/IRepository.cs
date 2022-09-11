@@ -11,6 +11,5 @@ namespace Resume.Data.IRepositories
         Task<TSourse> CreateAsync(TSourse extity);
         TSourse Update(TSourse extity);
         Task<bool> DeleteAsync(Expression<Func<TSourse, bool>> expression);
-        object GetAll(Expression<Func<Language, bool>> expression, bool v);
     }
 }

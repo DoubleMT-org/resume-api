@@ -14,6 +14,6 @@ namespace Resume.Service.Interfaces
         // IFormFile Settings
         ValueTask<Language> CreateAsync(LanguageForCreationDto SocialMedia);
         // IFormFile Settings
-        ValueTask<Language> UpdateAsync(long id, LanguageForCreationDto SocialMedia);
+        ValueTask<Language> UpdateAsync(long id, LanguageForUpdateDto SocialMedia);
     }
 }

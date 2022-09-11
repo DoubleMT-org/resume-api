@@ -29,6 +29,5 @@ namespace Resume.Service.DTOs.Users
         [MaxLength(15, ErrorMessage = "Password must not be less 15!")]
         [Required(ErrorMessage = "Password must not be null or empty!")]
         public string Password { get; set; }
-
     }
 }

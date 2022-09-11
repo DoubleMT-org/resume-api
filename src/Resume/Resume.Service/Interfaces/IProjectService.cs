@@ -14,6 +14,6 @@ namespace Resume.Service.Interfaces
         // IFormFile Settings
         ValueTask<Project> CreateAsync(ProjectForCreationDto SocialMedia);
         // IFormFile Settings
-        ValueTask<Project> UpdateAsync(long id, ProjectForCreationDto SocialMedia);
+        ValueTask<Project> UpdateAsync(long id, ProjectForUpdateDto SocialMedia);
     }
 }

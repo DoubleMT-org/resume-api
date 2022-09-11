@@ -17,5 +17,5 @@ public interface ICompanyService
     ValueTask<Company> CreateAsync(CompanyForCreationDto Company);
 
     // IFormFile Settings
-    ValueTask<Company> UpdateAsync(long id, CompanyForCreationDto Company);
+    ValueTask<Company> UpdateAsync(long id, CompanyForUpdateDto Company);
 }

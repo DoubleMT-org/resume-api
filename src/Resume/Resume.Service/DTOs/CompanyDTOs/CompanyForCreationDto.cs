@@ -27,5 +27,8 @@ namespace Resume.Service.DTOs.CompanyDTOs
         [MaxLength(256, ErrorMessage = "Url must be less than 256!")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Url must not be null or empty!")]
         public string Url { get; set; }
+
+        [Required(ErrorMessage = "User id must not be null.")]
+        public long? UserId { get; set; }
     }
 }

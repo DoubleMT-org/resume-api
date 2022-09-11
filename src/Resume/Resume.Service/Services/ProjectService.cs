@@ -8,6 +8,7 @@ using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
 using Resume.Service.Interfaces;
 using System.Linq.Expressions;
+using State = Resume.Domain.Enums.EntityState;
 
 namespace Resume.Service.Services
 {
@@ -24,13 +25,17 @@ namespace Resume.Service.Services
 
             public async ValueTask<Project> CreateAsync(ProjectForCreationDto project)
             {
-                Project existProject = await unitOfWork.Projects
-                                       .GetAsync(p => p.Name == project.Name
-                                       || p.Url == project.Url
-                                       && p.State != Domain.Enums.EntityState.Deleted);
+                if (project.UserId == null && project.CompanyId is null)
+                    throw new EventException(400, "Company id and user id mustn't be null at the same time.");
+
+                Project existProject = await unitOfWork.Projects.GetAsync(
+                    p => p.Name == project.Name
+                    || p.Url == project.Url
+                    && p.UserId == project.UserId
+                    && p.State != State.Deleted);
 
                 if (existProject is not null)
-                    throw new EventException(400, "This project is already exists");
+                    throw new EventException(400, "This project is already exists.");
 
                 var mappedProject = project.Adapt<Project>();
                 mappedProject.Create();
@@ -38,14 +43,14 @@ namespace Resume.Service.Services
                 var newProject = await unitOfWork.Projects.CreateAsync(mappedProject);
                 await unitOfWork.SaveChangesAsync();
 
-                return existProject;
+                return newProject;
             }
 
             public async ValueTask<bool> DeleteAsync(Expression<Func<Project, bool>> expression)
             {
                 Project existProject = await unitOfWork.Projects.GetAsync(expression);
 
-                if (existProject is null)
+                if (existProject is null || existProject.State == State.Deleted)
                     throw new EventException(404, "This project not found.");
 
                 existProject.Delete();
@@ -54,7 +59,8 @@ namespace Resume.Service.Services
                 return true;
             }
 
-            public async ValueTask<IEnumerable<Project>> GetAllAsync(PagenationParams @params,
+            public async ValueTask<IEnumerable<Project>> GetAllAsync(
+                PagenationParams @params,
                 Expression<Func<Project, bool>> expression = null)
             {
                 return await unitOfWork.Projects.GetAll(expression, false)
@@ -66,23 +72,27 @@ namespace Resume.Service.Services
             {
                 var existProject = await unitOfWork.Projects.GetAsync(expression);
 
-                if (existProject is null)
-                    throw new EventException(404, "Project not found");
+                if (existProject is null || existProject.State == State.Deleted)
+                    throw new EventException(404, "Project not found.");
 
                 return existProject;
             }
 
-            public async ValueTask<Project> UpdateAsync(long id, ProjectForCreationDto project)
+            public async ValueTask<Project> UpdateAsync(long id, ProjectForUpdateDto project)
             {
-                Project existProject = await unitOfWork.Projects.GetAsync(p => p.Id == id
-                                                                              && p.State != Domain.Enums.EntityState.Deleted);
+                Project existProject = await unitOfWork.Projects.GetAsync(
+                    p => p.Id == id
+                    && p.State != State.Deleted);
 
                 if (existProject is not null)
-                    throw new EventException(404, "Project not found");
+                    throw new EventException(404, "Project not found.");
 
-                Project checkedProject = await unitOfWork.Projects.GetAsync(sm => sm.Name == project.Name
-                                                                                        || sm.Url == project.Url
-                                                                                        && sm.State != Domain.Enums.EntityState.Deleted);
+                Project checkedProject = await unitOfWork.Projects.GetAsync(
+                    p => p.Name == project.Name
+                    || p.Url == project.Url
+                    && (p.UserId == existProject.UserId
+                    || p.CompanyId == project.CompanyId) 
+                    && p.State != State.Deleted);
 
                 if (checkedProject is not null)
                     throw new EventException(400, "This project informations already exist");

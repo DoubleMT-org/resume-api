@@ -11,5 +11,8 @@ namespace Resume.Service.DTOs.SocialMediaDTOs
         [MaxLength(32, ErrorMessage = "Url must be less than 32!")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Url must not be null or empty!")]
         public string Url { get; set; }
+
+        [Required(ErrorMessage = "User id must not be null.")]
+        public long? UserId { get; set; }
     }
 }

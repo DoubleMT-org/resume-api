@@ -11,7 +11,7 @@ public interface ISocialMediaService
     // IFormFile Settings
     ValueTask<bool> DeleteAsync(Expression<Func<SocialMedia, bool>> expression);
     // IFormFile Settings
-    ValueTask<SocialMedia> CreateAsync(SocialMediaForCreationDto SocialMedia);
+    ValueTask<SocialMedia> CreateAsync(SocialMediaForCreationDto socialMedia);
     // IFormFile Settings
-    ValueTask<SocialMedia> UpdateAsync(long id, SocialMediaForCreationDto SocialMedia);
+    ValueTask<SocialMedia> UpdateAsync(long id, SocialMediaForUpdateDto socialMedia);
 }

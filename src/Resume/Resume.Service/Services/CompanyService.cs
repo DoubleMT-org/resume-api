@@ -25,7 +25,9 @@ namespace Resume.Service.Services
         {
             Company existCompany = await unitOfWork.Companies.GetAsync
                 (c => c.Name == company.Name
-                || c.Url == company.Url);
+                || c.Url == company.Url 
+                && c.UserId == company.UserId
+                && c.State != Domain.Enums.EntityState.Deleted);
 
             if (company is not null)
                 throw new EventException(400, "This company informations is already exists");
@@ -41,7 +43,7 @@ namespace Resume.Service.Services
 
         public async ValueTask<bool> DeleteAsync(Expression<Func<Company, bool>> expression)
         {
-            Company existCompany = unitOfWork.Companies.GetAll(expression, include: "Project").FirstOrDefault();
+            Company existCompany = unitOfWork.Companies.GetAll(expression, include: "Projects").FirstOrDefault();
 
             if (existCompany is null)
                 throw new EventException(404, "Company not found");
@@ -56,14 +58,18 @@ namespace Resume.Service.Services
             return true;
         }
 
-        public async ValueTask<IEnumerable<Company>> GetAllAsync(PagenationParams @params, Expression<Func<Company, bool>> expression = null)
+        public async ValueTask<IEnumerable<Company>> GetAllAsync(
+            PagenationParams @params, 
+            Expression<Func<Company, bool>> expression = null)
         {
             return await unitOfWork.Companies.GetAll(expression, false)
                                                 .ToPagedList(@params)
                                                 .ToListAsync();
         }
 
-        public async ValueTask<IEnumerable<Company>> GetAllFullyAsync(PagenationParams @params, Expression<Func<Company, bool>> expression = null)
+        public async ValueTask<IEnumerable<Company>> GetAllFullyAsync(
+            PagenationParams @params, 
+            Expression<Func<Company, bool>> expression = null)
         {
             return await unitOfWork.Companies.GetAll(expression, false, "Projects")
                                                 .ToPagedList(@params)
@@ -80,20 +86,22 @@ namespace Resume.Service.Services
             return existCompany;
         }
 
-        public async ValueTask<Company> UpdateAsync(long id, CompanyForCreationDto company)
+        public async ValueTask<Company> UpdateAsync(long id, CompanyForUpdateDto company)
         {
-            Company existCompany = await unitOfWork.Companies.GetAsync(c => c.Id == id
-                                                                        && c.State != Domain.Enums.EntityState.Deleted);
+            Company existCompany = await unitOfWork.Companies.GetAsync(
+                c => c.Id == id
+                && c.State != Domain.Enums.EntityState.Deleted);
 
             if (existCompany is null)
-                throw new EventException(404, "Company fot found");
+                throw new EventException(404, "Company fot found.");
 
-            Company chechedCompany = await unitOfWork.Companies.GetAsync
-                (c => c.Name == company.Name
-                || c.Url == company.Url);
+            Company checkedCompany = await unitOfWork.Companies.GetAsync(
+                c => c.Name == company.Name
+                || c.Url == company.Url
+                || c.UserId == existCompany.UserId);
 
-            if (company is not null)
-                throw new EventException(400, "This company informations is already exists");
+            if (checkedCompany is not null)
+                throw new EventException(400, "This company informations is already exists.");
 
             var mappedCompany = company.Adapt(existCompany);
             mappedCompany.Update();
