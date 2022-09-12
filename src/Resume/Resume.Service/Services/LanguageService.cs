@@ -79,7 +79,7 @@ namespace Resume.Service.Services
                 && p.State != State.Deleted);
 
             if (existLanguage is null || existLanguage.State == State.Deleted)
-                throw new EventException(404, "Project not found");
+                throw new EventException(404, "Language not found");
 
             Language checkedLanguage = await unitOfWork.Languages.GetAsync(
                 l => l.Name == language.Name

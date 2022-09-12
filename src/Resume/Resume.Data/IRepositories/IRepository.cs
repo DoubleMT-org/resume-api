@@ -1,5 +1,4 @@
-﻿using Resume.Domain.Entities.Languages;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Resume.Data.IRepositories
 {

@@ -32,7 +32,7 @@ namespace Resume.Data.Repositories
         {
             this.dbContext = dbContext;
 
-            Attachments = new Repository<Attachment>(dbContext);
+            Attachments = new AttachmentRepository(dbContext);
             Companies = new Repository<Company>(dbContext);
             Educations = new Repository<Education>(dbContext);
             Languages = new Repository<Language>(dbContext);

@@ -8,8 +8,8 @@ namespace Resume.Data.Repositories
     public class Repository<TSourse> : IRepository<TSourse>
         where TSourse : class
     {
-        private readonly ResumeDbContext dbContext;
-        private readonly DbSet<TSourse> dbSet;
+        protected readonly ResumeDbContext dbContext;
+        protected readonly DbSet<TSourse> dbSet;
 
         public Repository(ResumeDbContext dbContext)
         {

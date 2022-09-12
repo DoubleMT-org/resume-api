@@ -1,8 +1,8 @@
 ﻿using Resume.Domain.Commons;
+using Resume.Domain.Entities.Attachments;
 using Resume.Domain.Entities.Projects;
 using Resume.Domain.Entities.Users;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
 
 namespace Resume.Domain.Entities.Companies;
 public class Company : Auditable<long>
@@ -25,7 +25,7 @@ public class Company : Auditable<long>
     public User User { get; set; }
 
     public int AttachmentId { get; set; }
-    public Attachment Attachment { get; set; }
 
     public ICollection<Project> Projects { get; set; }
+    public Attachment Attachment { get; set; }
 }

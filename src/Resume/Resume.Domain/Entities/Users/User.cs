@@ -26,8 +26,6 @@ namespace Resume.Domain.Entities.Users
         [MaxLength(256), Required]
         public string Password { get; set; }
 
-        public virtual Attachment Attachment { get; set; }
-
         public ICollection<Skill> Skills { get; set; }
 
         public ICollection<Language> Languages { get; set; }

@@ -91,7 +91,7 @@ namespace Resume.Service.Services
                     p => p.Name == project.Name
                     || p.Url == project.Url
                     && (p.UserId == existProject.UserId
-                    || p.CompanyId == project.CompanyId) 
+                    || p.CompanyId == project.CompanyId)
                     && p.State != State.Deleted);
 
                 if (checkedProject is not null)

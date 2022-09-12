@@ -1,5 +1,6 @@
 ﻿using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Companies;
+using Resume.Service.DTOs.AttachmentDTOs;
 using Resume.Service.DTOs.CompanyDTOs;
 using System.Linq.Expressions;
 
@@ -18,4 +19,7 @@ public interface ICompanyService
 
     // IFormFile Settings
     ValueTask<Company> UpdateAsync(long id, CompanyForUpdateDto Company);
+
+    ValueTask<Company> UpploadAsync(long id, AttachmentForCreationDto dto);
+
 }

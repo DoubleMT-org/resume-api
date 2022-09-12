@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Resume.Service.DTOs.AttachmentDTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Resume.Service.DTOs.CompanyDTOs
 {

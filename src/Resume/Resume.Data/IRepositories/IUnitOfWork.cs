@@ -11,7 +11,7 @@ namespace Resume.Data.IRepositories
 {
     public interface IUnitOfWork : IAsyncDisposable
     {
-        IRepository<Attachment> Attachments { get; }
+        IAttachmentRepository Attachments { get; }
         IRepository<Company> Companies { get; }
         IRepository<Education> Educations { get; }
         IRepository<Language> Languages { get; }

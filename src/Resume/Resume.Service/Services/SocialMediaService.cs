@@ -2,10 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Resume.Data.IRepositories;
 using Resume.Domain.Configurations;
+using Resume.Domain.Entities.Attachments;
+using Resume.Domain.Entities.Companies;
 using Resume.Domain.Entities.SocialMedias;
+using Resume.Domain.Enums;
+using Resume.Service.DTOs.AttachmentDTOs;
 using Resume.Service.DTOs.SocialMediaDTOs;
 using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
+using Resume.Service.Helpers;
 using Resume.Service.Interfaces;
 using System.Linq.Expressions;
 using State = Resume.Domain.Enums.EntityState;
@@ -14,10 +19,12 @@ namespace Resume.Service.Services;
 public class SocialMediaService : ISocialMediaService
 {
     private readonly IUnitOfWork unitOfWork;
+    private readonly IAttachmentService attachmentService;
 
-    public SocialMediaService(IUnitOfWork unitOfWork)
+    public SocialMediaService(IUnitOfWork unitOfWork, IAttachmentService attachmentService)
     {
         this.unitOfWork = unitOfWork;
+        this.attachmentService = attachmentService;
     }
 
     public async ValueTask<SocialMedia> CreateAsync(SocialMediaForCreationDto socialMedia)
@@ -54,7 +61,7 @@ public class SocialMediaService : ISocialMediaService
     }
 
     public async ValueTask<IEnumerable<SocialMedia>> GetAllAsync
-        (PagenationParams @params, 
+        (PagenationParams @params,
         Expression<Func<SocialMedia, bool>> expression = null)
     {
         return await unitOfWork.SocialMedias.GetAll(expression, false)
@@ -99,4 +106,31 @@ public class SocialMediaService : ISocialMediaService
         return existSocialMedia;
 
     }
+
+    public async ValueTask<SocialMedia> UpploadAsync(long id, AttachmentForCreationDto dto)
+    {
+        SocialMedia existSocialMedia = await unitOfWork.SocialMedias.GetAsync(
+            sm => sm.Id == id 
+            && sm.State != State.Deleted);
+
+        if (existSocialMedia is null)
+            throw new EventException(400, "This social media not found!");
+
+        Attachment checkingAttachment = await unitOfWork.Attachments.GetAsync(
+            a => a.Id == existSocialMedia.AttachmentId
+            && a.Type == AttachmentReference.SocialMedia); 
+
+        if (checkingAttachment is not null)
+            await attachmentService.DeleteAsync(checkingAttachment.Path);
+
+        Attachment attachment = await attachmentService.CreateAsync(
+            dto, id, AttachmentReference.SocialMedia);
+
+        await unitOfWork.SaveChangesAsync();
+
+        existSocialMedia.Attachment = attachment;
+
+        return existSocialMedia;
+    }
+
 }
