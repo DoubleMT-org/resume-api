@@ -4,7 +4,7 @@ using Resume.Service.DTOs.SkillDTOs;
 using System.Linq.Expressions;
 
 namespace Resume.Service.Interfaces;
-public interface ISkillService
+public interface ISkillService 
 {
     ValueTask<Skill> GetAsync(Expression<Func<Skill, bool>> expression);
     ValueTask<IEnumerable<Skill>> GetAllAsync(

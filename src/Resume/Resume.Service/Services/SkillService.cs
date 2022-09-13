@@ -6,11 +6,12 @@ using Resume.Domain.Entities.Skills;
 using Resume.Service.DTOs.SkillDTOs;
 using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
+using Resume.Service.Interfaces;
 using System.Linq.Expressions;
 using State = Resume.Domain.Enums.EntityState;
 
 namespace Resume.Service.Services;
-public class SkillService
+public class SkillService : ISkillService
 {
     private readonly IUnitOfWork unitOfWork;
 

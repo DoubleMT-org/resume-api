@@ -13,7 +13,7 @@ namespace Resume.Data.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public IRepository<Attachment> Attachments { get; }
+        public IAttachmentRepository Attachments { get; }
 
         public IRepository<Company> Companies { get; }
 

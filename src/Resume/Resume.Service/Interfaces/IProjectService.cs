@@ -9,11 +9,8 @@ namespace Resume.Service.Interfaces
     {
         ValueTask<Project> GetAsync(Expression<Func<Project, bool>> expression);
         ValueTask<IEnumerable<Project>> GetAllAsync(PagenationParams @params, Expression<Func<Project, bool>> expression = null);
-        // IFormFile Settings
         ValueTask<bool> DeleteAsync(Expression<Func<Project, bool>> expression);
-        // IFormFile Settings
         ValueTask<Project> CreateAsync(ProjectForCreationDto SocialMedia);
-        // IFormFile Settings
         ValueTask<Project> UpdateAsync(long id, ProjectForUpdateDto SocialMedia);
     }
 }
