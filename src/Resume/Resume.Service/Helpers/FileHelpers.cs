@@ -1,4 +1,5 @@
-﻿using Resume.Domain.Enums;
+﻿using Microsoft.Extensions.Configuration;
+using Resume.Domain.Enums;
 using Resume.Service.DTOs.AttachmentDTOs;
 
 namespace Resume.Service.Helpers;

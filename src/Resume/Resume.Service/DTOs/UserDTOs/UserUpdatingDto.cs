@@ -2,7 +2,7 @@
 
 namespace Resume.Service.DTOs.UserDTOs
 {
-    public class UserUpdatingDto
+    public class UserForUpdateDto
     {
         [MaxLength(32, ErrorMessage = "FirstName must be less than 32!")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "FirstName must not be null or empty!")]

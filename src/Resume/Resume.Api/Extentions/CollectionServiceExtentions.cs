@@ -1,8 +1,12 @@
-﻿using Resume.Data.IRepositories;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Resume.Data.IRepositories;
 using Resume.Data.Repositories;
 using Resume.Service.Helpers;
 using Resume.Service.Interfaces;
 using Resume.Service.Services;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Resume.Api.Extentions;
 public static class CollectionServiceExtentions
@@ -20,6 +24,29 @@ public static class CollectionServiceExtentions
         services.AddScoped<IUserService, UserService>();
 
         services.AddTransient<FileHelpers>();
+    }
+
+    public static void AddJwtService(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(x =>
+        {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(p =>
+        {
+            var key = Encoding.UTF8.GetBytes(configuration["JWT:Key"]);
+            p.SaveToken = true;
+            p.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["JWT:Issuer"],
+                ValidAudience = configuration["JWT:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+        });
     }
 
 }

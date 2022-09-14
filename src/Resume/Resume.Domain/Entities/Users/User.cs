@@ -6,6 +6,7 @@ using Resume.Domain.Entities.Projects;
 using Resume.Domain.Entities.Skills;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
+using System.Text.Json.Serialization;
 
 namespace Resume.Domain.Entities.Users
 {
@@ -23,7 +24,7 @@ namespace Resume.Domain.Entities.Users
         [MaxLength(16), Required]
         public string Phone { get; set; }
 
-        [MaxLength(256), Required]
+        [MaxLength(256), Required, JsonIgnore]
         public string Password { get; set; }
 
         public ICollection<Skill> Skills { get; set; }

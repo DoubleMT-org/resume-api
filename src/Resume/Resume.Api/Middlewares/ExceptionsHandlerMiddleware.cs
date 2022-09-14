@@ -9,9 +9,9 @@ namespace Resume.Api.Middlewares
     public class ExceptionsHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger _logger;
+        private readonly ILogger<ExceptionsHandlerMiddleware> _logger;
 
-        public ExceptionsHandlerMiddleware(RequestDelegate next, ILogger logger)
+        public ExceptionsHandlerMiddleware(RequestDelegate next, ILogger<ExceptionsHandlerMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -36,7 +36,7 @@ namespace Resume.Api.Middlewares
             catch (Exception ex)
             {
                 // logger to here
-                _logger.LogError(ex.ToString());
+                _logger.LogError(message: ex.ToString());
 
                 httpContext.Response.StatusCode = 500;
 
