@@ -14,137 +14,136 @@ using Resume.Service.Interfaces;
 using System.Linq.Expressions;
 using State = Resume.Domain.Enums.EntityState;
 
-namespace Resume.Service.Services
+namespace Resume.Service.Services;
+
+public class CompanyService : ICompanyService
 {
-    public class CompanyService : ICompanyService
+    private readonly IUnitOfWork unitOfWork;
+    private readonly FileHelpers fileHelpers;
+    private readonly IAttachmentService attachmentService;
+
+    public CompanyService(IUnitOfWork unitOfWork, FileHelpers fileHelpers, IAttachmentService attachmentService)
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly FileHelpers fileHelpers;
-        private readonly IAttachmentService attachmentService;
+        this.unitOfWork = unitOfWork;
+        this.fileHelpers = fileHelpers;
+        this.attachmentService = attachmentService;
+    }
 
-        public CompanyService(IUnitOfWork unitOfWork, FileHelpers fileHelpers, IAttachmentService attachmentService)
-        {
-            this.unitOfWork = unitOfWork;
-            this.fileHelpers = fileHelpers;
-            this.attachmentService = attachmentService;
-        }
+    public async ValueTask<Company> CreateAsync(CompanyForCreationDto company)
+    {
+        Company existCompany = await unitOfWork.Companies.GetAsync
+            (c => c.Name == company.Name
+            || c.Url == company.Url
+            && c.UserId == company.UserId
+            && c.State != Domain.Enums.EntityState.Deleted);
 
-        public async ValueTask<Company> CreateAsync(CompanyForCreationDto company)
-        {
-            Company existCompany = await unitOfWork.Companies.GetAsync
-                (c => c.Name == company.Name
-                || c.Url == company.Url
-                && c.UserId == company.UserId
-                && c.State != Domain.Enums.EntityState.Deleted);
+        if (company is not null)
+            throw new EventException(400, "This company informations is already exists");
 
-            if (company is not null)
-                throw new EventException(400, "This company informations is already exists");
+        var mappedCompany = company.Adapt<Company>();
+        mappedCompany.Create();
 
-            var mappedCompany = company.Adapt<Company>();
-            mappedCompany.Create();
+        var newCompany = await unitOfWork.Companies.CreateAsync(mappedCompany);
 
-            var newCompany = await unitOfWork.Companies.CreateAsync(mappedCompany);
+        await unitOfWork.SaveChangesAsync();
 
-            await unitOfWork.SaveChangesAsync();
+        return newCompany;
+    }
 
-            return newCompany;
-        }
+    public async ValueTask<bool> DeleteAsync(Expression<Func<Company, bool>> expression)
+    {
+        Company existCompany = unitOfWork.Companies.GetAll(expression, include: "Projects").FirstOrDefault();
 
-        public async ValueTask<bool> DeleteAsync(Expression<Func<Company, bool>> expression)
-        {
-            Company existCompany = unitOfWork.Companies.GetAll(expression, include: "Projects").FirstOrDefault();
+        if (existCompany is null)
+            throw new EventException(404, "Company not found");
 
-            if (existCompany is null)
-                throw new EventException(404, "Company not found");
+        for (int i = 0; i < existCompany.Projects?.Count; i++)
+            existCompany.Projects.ElementAt(i).Delete();
 
-            for (int i = 0; i < existCompany.Projects?.Count; i++)
-                existCompany.Projects.ElementAt(i).Delete();
-
-            existCompany.Delete();
-            await unitOfWork.SaveChangesAsync();
+        existCompany.Delete();
+        await unitOfWork.SaveChangesAsync();
 
 
-            return true;
-        }
+        return true;
+    }
 
-        public async ValueTask<IEnumerable<Company>> GetAllAsync(
-            PagenationParams @params,
-            Expression<Func<Company, bool>> expression = null)
-        {
-            return await unitOfWork.Companies.GetAll(expression, false)
-                                                .ToPagedList(@params)
-                                                .ToListAsync();
-        }
+    public async ValueTask<IEnumerable<Company>> GetAllAsync(
+        PagenationParams @params,
+        Expression<Func<Company, bool>> expression = null)
+    {
+        return await unitOfWork.Companies.GetAll(expression, false)
+                                            .ToPagedList(@params)
+                                            .ToListAsync();
+    }
 
-        public async ValueTask<IEnumerable<Company>> GetAllFullyAsync(
-            PagenationParams @params,
-            Expression<Func<Company, bool>> expression = null)
-        {
-            return await unitOfWork.Companies.GetAll(expression, false, "Projects")
-                                                .ToPagedList(@params)
-                                                .ToListAsync();
-        }
+    public async ValueTask<IEnumerable<Company>> GetAllFullyAsync(
+        PagenationParams @params,
+        Expression<Func<Company, bool>> expression = null)
+    {
+        return await unitOfWork.Companies.GetAll(expression, false, "Projects")
+                                            .ToPagedList(@params)
+                                            .ToListAsync();
+    }
 
-        public async ValueTask<Company> GetAsync(Expression<Func<Company, bool>> expression)
-        {
-            Company existCompany = await unitOfWork.Companies.GetAsync(expression);
+    public async ValueTask<Company> GetAsync(Expression<Func<Company, bool>> expression)
+    {
+        Company existCompany = await unitOfWork.Companies.GetAsync(expression);
 
-            if (existCompany is null)
-                throw new EventException(404, "Company not found");
+        if (existCompany is null)
+            throw new EventException(404, "Company not found");
 
-            return existCompany;
-        }
+        return existCompany;
+    }
 
-        public async ValueTask<Company> UpdateAsync(long id, CompanyForUpdateDto company)
-        {
-            Company existCompany = await unitOfWork.Companies.GetAsync(
-                c => c.Id == id
-                && c.State != Domain.Enums.EntityState.Deleted);
+    public async ValueTask<Company> UpdateAsync(long id, CompanyForUpdateDto company)
+    {
+        Company existCompany = await unitOfWork.Companies.GetAsync(
+            c => c.Id == id
+            && c.State != Domain.Enums.EntityState.Deleted);
 
-            if (existCompany is null)
-                throw new EventException(404, "Company fot found.");
+        if (existCompany is null)
+            throw new EventException(404, "Company fot found.");
 
-            Company checkedCompany = await unitOfWork.Companies.GetAsync(
-                c => c.Name == company.Name
-                || c.Url == company.Url
-                || c.UserId == existCompany.UserId);
+        Company checkedCompany = await unitOfWork.Companies.GetAsync(
+            c => c.Name == company.Name
+            || c.Url == company.Url
+            || c.UserId == existCompany.UserId);
 
-            if (checkedCompany is not null)
-                throw new EventException(400, "This company informations is already exists.");
+        if (checkedCompany is not null)
+            throw new EventException(400, "This company informations is already exists.");
 
-            var mappedCompany = company.Adapt(existCompany);
-            mappedCompany.Update();
+        var mappedCompany = company.Adapt(existCompany);
+        mappedCompany.Update();
 
-            var updatedCompany = unitOfWork.Companies.Update(mappedCompany);
-            await unitOfWork.SaveChangesAsync();
+        var updatedCompany = unitOfWork.Companies.Update(mappedCompany);
+        await unitOfWork.SaveChangesAsync();
 
-            return updatedCompany;
-        }
+        return updatedCompany;
+    }
 
-        public async ValueTask<Company> UpploadAsync(long id, AttachmentForCreationDto dto)
-        {
-            Company existCompany = await unitOfWork.Companies.GetAsync(
-            sm => sm.Id == id
-            && sm.State != State.Deleted);
+    public async ValueTask<Company> UpploadAsync(long id, AttachmentForCreationDto dto)
+    {
+        Company existCompany = await unitOfWork.Companies.GetAsync(
+        sm => sm.Id == id
+        && sm.State != State.Deleted);
 
-            if (existCompany is null)
-                throw new EventException(400, "This company not found!");
+        if (existCompany is null)
+            throw new EventException(400, "This company not found!");
 
-            Attachment checkingAttachment = await unitOfWork.Attachments.GetAsync(
-                a => a.Id == existCompany.AttachmentId
-                && a.Type == AttachmentReference.Comppany);
+        Attachment checkingAttachment = await unitOfWork.Attachments.GetAsync(
+            a => a.Id == existCompany.AttachmentId
+            && a.Type == AttachmentReference.Comppany);
 
-            if (checkingAttachment is not null)
-                await attachmentService.DeleteAsync(checkingAttachment.Path);
+        if (checkingAttachment is not null)
+            await attachmentService.DeleteAsync(checkingAttachment.Path);
 
-            Attachment attachment = await attachmentService.CreateAsync(
-                dto, id, AttachmentReference.Comppany);
+        Attachment attachment = await attachmentService.CreateAsync(
+            dto, id, AttachmentReference.Comppany);
 
-            await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
 
-            existCompany.Attachment = attachment;
+        existCompany.Attachment = attachment;
 
-            return existCompany;
-        }
+        return existCompany;
     }
 }

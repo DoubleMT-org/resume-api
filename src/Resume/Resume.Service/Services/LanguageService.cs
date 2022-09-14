@@ -10,92 +10,91 @@ using Resume.Service.Interfaces;
 using System.Linq.Expressions;
 using State = Resume.Domain.Enums.EntityState;
 
-namespace Resume.Service.Services
+namespace Resume.Service.Services;
+
+public class LanguageService : ILanguageService
 {
-    public class LanguageService : ILanguageService
+    private readonly IUnitOfWork unitOfWork;
+
+    public LanguageService(IUnitOfWork unitOfWork)
     {
-        private readonly IUnitOfWork unitOfWork;
+        this.unitOfWork = unitOfWork;
+    }
+    public async ValueTask<Language> CreateAsync(LanguageForCreationDto language)
+    {
+        Language existLanguage = await unitOfWork.Languages.GetAsync(
+            l => l.Name == language.Name
+            && l.UserId == language.UserId
+            && l.State != State.Deleted);
 
-        public LanguageService(IUnitOfWork unitOfWork)
-        {
-            this.unitOfWork = unitOfWork;
-        }
-        public async ValueTask<Language> CreateAsync(LanguageForCreationDto language)
-        {
-            Language existLanguage = await unitOfWork.Languages.GetAsync(
-                l => l.Name == language.Name
-                && l.UserId == language.UserId
-                && l.State != State.Deleted);
+        if (existLanguage is not null)
+            throw new EventException(400, "This language is already exists.");
 
-            if (existLanguage is not null)
-                throw new EventException(400, "This language is already exists.");
+        // language degree with enums critics !!!
+        var mappedLanguage = language.Adapt<Language>();
+        mappedLanguage.Create();
 
-            // language degree with enums critics !!!
-            var mappedLanguage = language.Adapt<Language>();
-            mappedLanguage.Create();
+        var newLanguage = await unitOfWork.Languages.CreateAsync(mappedLanguage);
+        await unitOfWork.SaveChangesAsync();
 
-            var newLanguage = await unitOfWork.Languages.CreateAsync(mappedLanguage);
-            await unitOfWork.SaveChangesAsync();
+        return newLanguage;
+    }
 
-            return newLanguage;
-        }
+    public async ValueTask<bool> DeleteAsync(Expression<Func<Language, bool>> expression)
+    {
+        Language existLanguage = await unitOfWork.Languages.GetAsync(expression);
 
-        public async ValueTask<bool> DeleteAsync(Expression<Func<Language, bool>> expression)
-        {
-            Language existLanguage = await unitOfWork.Languages.GetAsync(expression);
+        if (existLanguage is null || existLanguage.State == State.Deleted)
+            throw new EventException(404, "This language not found.");
 
-            if (existLanguage is null || existLanguage.State == State.Deleted)
-                throw new EventException(404, "This language not found.");
+        existLanguage.Delete();
+        await unitOfWork.SaveChangesAsync();
 
-            existLanguage.Delete();
-            await unitOfWork.SaveChangesAsync();
+        return true;
+    }
 
-            return true;
-        }
+    public async ValueTask<IEnumerable<Language>> GetAllAsync(
+        PagenationParams @params,
+        Expression<Func<Language, bool>> expression = null)
+    {
+        return await unitOfWork.Languages.GetAll(expression, false)
+                                            .ToPagedList(@params)
+                                                .ToListAsync();
+    }
 
-        public async ValueTask<IEnumerable<Language>> GetAllAsync(
-            PagenationParams @params,
-            Expression<Func<Language, bool>> expression = null)
-        {
-            return await unitOfWork.Languages.GetAll(expression, false)
-                                                .ToPagedList(@params)
-                                                    .ToListAsync();
-        }
+    public async ValueTask<Language> GetAsync(Expression<Func<Language, bool>> expression)
+    {
+        var existLanguage = await unitOfWork.Languages.GetAsync(expression);
 
-        public async ValueTask<Language> GetAsync(Expression<Func<Language, bool>> expression)
-        {
-            var existLanguage = await unitOfWork.Languages.GetAsync(expression);
+        if (existLanguage is null || existLanguage.State == State.Deleted)
+            throw new EventException(404, "Language not found");
 
-            if (existLanguage is null || existLanguage.State == State.Deleted)
-                throw new EventException(404, "Language not found");
+        return existLanguage;
+    }
 
-            return existLanguage;
-        }
+    public async ValueTask<Language> UpdateAsync(long id, LanguageForUpdateDto language)
+    {
+        Language existLanguage = await unitOfWork.Languages.GetAsync(
+            p => p.Id == id
+            && p.State != State.Deleted);
 
-        public async ValueTask<Language> UpdateAsync(long id, LanguageForUpdateDto language)
-        {
-            Language existLanguage = await unitOfWork.Languages.GetAsync(
-                p => p.Id == id
-                && p.State != State.Deleted);
+        if (existLanguage is null || existLanguage.State == State.Deleted)
+            throw new EventException(404, "Language not found");
 
-            if (existLanguage is null || existLanguage.State == State.Deleted)
-                throw new EventException(404, "Language not found");
+        Language checkedLanguage = await unitOfWork.Languages.GetAsync(
+            l => l.Name == language.Name
+            && l.UserId == existLanguage.UserId
+            && l.State != State.Deleted);
 
-            Language checkedLanguage = await unitOfWork.Languages.GetAsync(
-                l => l.Name == language.Name
-                && l.UserId == existLanguage.UserId
-                && l.State != State.Deleted);
+        if (checkedLanguage is not null)
+            throw new EventException(400, "This language informations already exist");
 
-            if (checkedLanguage is not null)
-                throw new EventException(400, "This language informations already exist");
+        var mappedLanguage = language.Adapt(existLanguage);
+        mappedLanguage.Update();
 
-            var mappedLanguage = language.Adapt(existLanguage);
-            mappedLanguage.Update();
+        unitOfWork.Languages.Update(mappedLanguage);
+        await unitOfWork.SaveChangesAsync();
 
-            unitOfWork.Languages.Update(mappedLanguage);
-            await unitOfWork.SaveChangesAsync();
-
-            return existLanguage;
-        }
+        return existLanguage;
     }
 }

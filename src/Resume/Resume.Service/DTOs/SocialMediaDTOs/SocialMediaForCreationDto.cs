@@ -1,19 +1,18 @@
 ﻿using Resume.Service.DTOs.AttachmentDTOs;
 using System.ComponentModel.DataAnnotations;
 
-namespace Resume.Service.DTOs.SocialMediaDTOs
+namespace Resume.Service.DTOs.SocialMediaDTOs;
+
+public class SocialMediaForCreationDto
 {
-    public class SocialMediaForCreationDto
-    {
-        [MaxLength(32, ErrorMessage = "Name must be less than 32!")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Name must not be null or empty!")]
-        public string Name { get; set; }
+    [MaxLength(32, ErrorMessage = "Name must be less than 32!")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Name must not be null or empty!")]
+    public string Name { get; set; }
 
-        [MaxLength(32, ErrorMessage = "Url must be less than 32!")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Url must not be null or empty!")]
-        public string Url { get; set; }
+    [MaxLength(32, ErrorMessage = "Url must be less than 32!")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Url must not be null or empty!")]
+    public string Url { get; set; }
 
-        [Required(ErrorMessage = "User id must not be null.")]
-        public long? UserId { get; set; }
-    }
+    [Required(ErrorMessage = "User id must not be null.")]
+    public long? UserId { get; set; }
 }
