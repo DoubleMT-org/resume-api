@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Resume.Api.Extentions;
 using Resume.Api.Middlewares;
+using Resume.Data.DbContexts;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +10,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<ResumeDbContext>(
+    options => options.UseNpgsql(
+        builder.Configuration.GetConnectionString("ResumeDb"),
+    p => p.MigrationsAssembly("Resume.Data")));
+
+var logger = new LoggerConfiguration()
+  .ReadFrom.Configuration(builder.Configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add Custom Services
 builder.Services.AddCustomServices();
