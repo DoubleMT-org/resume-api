@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Resume.Service.DTOs.UserDTOs;
-
 public class UserForUpdateDto
 {
     [MaxLength(32, ErrorMessage = "FirstName must be less than 32!")]

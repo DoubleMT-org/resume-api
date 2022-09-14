@@ -9,6 +9,7 @@ namespace Resume.Api.Controllers;
 
 public class UsersController : BaseController
 {
+    #pragma warning disable
     private readonly IUserService userService;
 
     public UsersController(IUserService userService)
