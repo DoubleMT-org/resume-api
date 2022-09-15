@@ -1,5 +1,6 @@
 ﻿using Resume.Domain.Configurations;
 using Resume.Domain.Entities.SocialMedias;
+using Resume.Service.DTOs.AttachmentDTOs;
 using Resume.Service.DTOs.SocialMediaDTOs;
 using System.Linq.Expressions;
 
@@ -14,4 +15,6 @@ public interface ISocialMediaService
     ValueTask<SocialMedia> CreateAsync(SocialMediaForCreationDto socialMedia);
     // IFormFile Settings
     ValueTask<SocialMedia> UpdateAsync(long id, SocialMediaForUpdateDto socialMedia);
+
+    ValueTask<SocialMedia> UpploadAsync(long id, AttachmentForCreationDto dto);
 }

@@ -9,6 +9,12 @@ namespace Resume.Api.Controllers
     public class EducationsController : BaseController
     {
         private readonly IEducationService educationService;
+
+        public EducationsController(IEducationService educationService)
+        {
+            this.educationService = educationService;
+        }
+
         [HttpPost]
         public async ValueTask<ActionResult<Education>> CreateAsync(EducationForCreationDto dto) =>
          Ok(await educationService.CreateAsync(dto));

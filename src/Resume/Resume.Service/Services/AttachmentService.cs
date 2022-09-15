@@ -9,9 +9,9 @@ namespace Resume.Service.Services;
 public class AttachmentService : IAttachmentService
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly FileHelpers fileHelpers;
+    private readonly FileHelper fileHelpers;
 
-    public AttachmentService(IUnitOfWork unitOfWork, FileHelpers fileHelpers)
+    public AttachmentService(IUnitOfWork unitOfWork, FileHelper fileHelpers)
     {
         this.unitOfWork = unitOfWork;
         this.fileHelpers = fileHelpers;
@@ -28,10 +28,12 @@ public class AttachmentService : IAttachmentService
         {
             Name = rawAttachment.name,
             Path = rawAttachment.path,
-            Id = Id
+            EntityId = Id
         };
 
         var newAttachment = await unitOfWork.Attachments.CreateAsync(readyAttachment);
+        await unitOfWork.SaveChangesAsync();
+
 
         return newAttachment;
 

@@ -19,10 +19,10 @@ namespace Resume.Service.Services;
 public class CompanyService : ICompanyService
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly FileHelpers fileHelpers;
+    private readonly FileHelper fileHelpers;
     private readonly IAttachmentService attachmentService;
 
-    public CompanyService(IUnitOfWork unitOfWork, FileHelpers fileHelpers, IAttachmentService attachmentService)
+    public CompanyService(IUnitOfWork unitOfWork, FileHelper fileHelpers, IAttachmentService attachmentService)
     {
         this.unitOfWork = unitOfWork;
         this.fileHelpers = fileHelpers;

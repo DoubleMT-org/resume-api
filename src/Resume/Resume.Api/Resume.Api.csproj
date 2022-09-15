@@ -19,11 +19,18 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Resume.Data\Resume.Data.csproj" />
     <ProjectReference Include="..\Resume.Service\Resume.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\companies\" />
+    <Folder Include="wwwroot\importants\" />
+    <Folder Include="wwwroot\socialmedias\" />
   </ItemGroup>
 
 </Project>

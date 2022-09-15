@@ -23,7 +23,7 @@ public static class CollectionServiceExtentions
         services.AddScoped<ISocialMediaService, SocialMediaService>();
         services.AddScoped<IUserService, UserService>();
 
-        services.AddTransient<FileHelpers>();
+        services.AddTransient<FileHelper>();
     }
 
     public static void AddJwtService(this IServiceCollection services, IConfiguration configuration)

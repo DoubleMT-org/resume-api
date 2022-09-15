@@ -1,0 +1,5 @@
+﻿1) language & social media & company & education & Project & Skill created reference user unchecked is exist !!!
+
+2) language deegre is not working !!!
+
+4) Company and social media gets already with own "Attachment"

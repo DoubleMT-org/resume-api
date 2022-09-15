@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Resume.Api.Extentions;
 using Resume.Api.Middlewares;
 using Resume.Data.DbContexts;
+using Resume.Service.Helpers;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
 builder.Services.AddDbContext<ResumeDbContext>(
     options => options.UseNpgsql(
@@ -25,6 +30,8 @@ builder.Logging.AddSerilog(logger);
 // Add Custom Services
 builder.Services.AddCustomServices();
 
+WebEnvironmentHelper.WebRootPath = builder.Environment.WebRootPath;
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
 
 app.UseExceptionsHendlerMiddleware();
 

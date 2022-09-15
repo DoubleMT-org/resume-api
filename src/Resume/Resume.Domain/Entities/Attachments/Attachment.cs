@@ -8,10 +8,10 @@ namespace Resume.Domain.Entities.Attachments
     {
         public long Id { get; set; }
 
-        [MaxLength(32)]
+        [MaxLength(128)]
         public string Name { get; set; }
 
-        [MaxLength(64)]
+        [MaxLength(128)]
         public string Path { get; set; }
 
         public long? EntityId { get; set; }

@@ -126,8 +126,6 @@ public class SocialMediaService : ISocialMediaService
         Attachment attachment = await attachmentService.CreateAsync(
             dto, id, AttachmentReference.SocialMedia);
 
-        await unitOfWork.SaveChangesAsync();
-
         existSocialMedia.Attachment = attachment;
 
         return existSocialMedia;

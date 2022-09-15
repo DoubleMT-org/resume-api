@@ -9,6 +9,12 @@ namespace Resume.Api.Controllers
     public class ProjectsController : BaseController
     {
         private readonly IProjectService projectService;
+
+        public ProjectsController(IProjectService projectService)
+        {
+            this.projectService = projectService;
+        }
+
         [HttpPost]
         public async ValueTask<ActionResult<Project>> CreateAsync(ProjectForCreationDto dto) =>
          Ok(await projectService.CreateAsync(dto));

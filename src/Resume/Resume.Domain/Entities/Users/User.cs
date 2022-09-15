@@ -4,6 +4,7 @@ using Resume.Domain.Entities.Educations;
 using Resume.Domain.Entities.Languages;
 using Resume.Domain.Entities.Projects;
 using Resume.Domain.Entities.Skills;
+using Resume.Domain.Entities.SocialMedias;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 using System.Text.Json.Serialization;
@@ -31,6 +32,7 @@ namespace Resume.Domain.Entities.Users
 
         public ICollection<Language> Languages { get; set; }
 
+        public ICollection<SocialMedia> SocialMedias { get; set; }
         public ICollection<Company> Companies { get; set; }
 
         public ICollection<Project> Projects { get; set; }

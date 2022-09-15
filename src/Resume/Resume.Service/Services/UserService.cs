@@ -165,6 +165,7 @@ public class UserService : IUserService
             .Include(user => user.Educations)
             .Include(user => user.Languages)
             .Include(user => user.Skills)
+            .Include(user => user.SocialMedias)
             .FirstOrDefaultAsync();
     }
 

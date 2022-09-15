@@ -9,6 +9,12 @@ namespace Resume.Api.Controllers
     public class LanguagesController : BaseController
     {
         private readonly ILanguageService languageService;
+
+        public LanguagesController(ILanguageService languageService)
+        {
+            this.languageService = languageService;
+        }
+
         [HttpPost]
         public async ValueTask<ActionResult<Language>> CreateAsync(LanguageForCreationDto dto) =>
          Ok(await languageService.CreateAsync(dto));

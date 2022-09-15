@@ -9,6 +9,11 @@ namespace Resume.Api.Controllers
     public class SkillsController : BaseController
     {
         private readonly ISkillService skillService;
+        public SkillsController(ISkillService skillService)
+        {
+            this.skillService = skillService;
+        }
+
         [HttpPost]
         public async ValueTask<ActionResult<Skill>> CreateAsync(SkillForCreationDto dto) =>
          Ok(await skillService.CreateAsync(dto));

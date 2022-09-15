@@ -13,7 +13,7 @@ namespace Resume.Data.DbContexts
     public class ResumeDbContext : DbContext
     {
         public ResumeDbContext(DbContextOptions<ResumeDbContext> options)
-        : base(options)
+            : base(options)
         {
         }
 
