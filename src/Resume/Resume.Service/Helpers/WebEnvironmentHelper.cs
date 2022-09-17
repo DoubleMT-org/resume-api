@@ -1,10 +1,7 @@
-﻿namespace Resume.Service.Helpers
+﻿namespace Resume.Service.Helpers;
+public class WebEnvironmentHelper
 {
-    public class WebEnvironmentHelper
-    {
-        public static string WebRootPath { get; set; } = "";
-        public static string SocialMediaImagesPath => "socialmedias";
-        public static string CompanyImagesPath =>"companies";
-        public static string ImportantImagesPath => "importants";
-    }
+    public static string WebRootPath { get; set; } = "";
+    public static string SocialMediaImagesPath => "socialmedias";
+    public static string ImportantImagesPath => "importants";
 }

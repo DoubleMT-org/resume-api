@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.Data", "Resume.Data\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.Service", "Resume.Service\Resume.Service.csproj", "{1834136A-73D0-4C81-B921-D7010B8DCF34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resume.Api", "Resume.Api\Resume.Api.csproj", "{5E5A7C65-177A-4501-A112-24E7357B9BBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.Api", "Resume.Api\Resume.Api.csproj", "{5E5A7C65-177A-4501-A112-24E7357B9BBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resume.UnitTest", "Resume.UnitTest\Resume.UnitTest.csproj", "{DA547819-67D2-4F9A-A386-0FFD47FA7BF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{5E5A7C65-177A-4501-A112-24E7357B9BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E5A7C65-177A-4501-A112-24E7357B9BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E5A7C65-177A-4501-A112-24E7357B9BBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA547819-67D2-4F9A-A386-0FFD47FA7BF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA547819-67D2-4F9A-A386-0FFD47FA7BF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA547819-67D2-4F9A-A386-0FFD47FA7BF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA547819-67D2-4F9A-A386-0FFD47FA7BF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,7 +19,6 @@ public static class StringExtentions
 
         var hasNumber = new Regex(@"[0-9]+");
         var hasUpperChar = new Regex(@"[A-Z]+");
-        var hasMiniMaxChars = new Regex(@".{8,15}");
         var hasLowerChar = new Regex(@"[a-z]+");
 
         if (!hasLowerChar.IsMatch(input))
@@ -32,7 +31,7 @@ public static class StringExtentions
             ErrorMessage = "Password should contain at least one upper case letter.";
             return false;
         }
-        else if (!hasMiniMaxChars.IsMatch(input))
+        else if (input.Length < 8 || input.Length > 15)
         {
             ErrorMessage = "Password should not be lesser than 8 or greater than 15 characters.";
             return false;

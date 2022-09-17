@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Users;
 using Resume.Service.DTOs.UserDTOs;

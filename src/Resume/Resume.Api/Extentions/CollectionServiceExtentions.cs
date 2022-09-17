@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Resume.Data.IRepositories;
 using Resume.Data.Repositories;
@@ -30,8 +32,8 @@ public static class CollectionServiceExtentions
     {
         services.AddAuthentication(x =>
         {
-            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
         }).AddJwtBearer(p =>
         {
             var key = Encoding.UTF8.GetBytes(configuration["JWT:Key"]);
