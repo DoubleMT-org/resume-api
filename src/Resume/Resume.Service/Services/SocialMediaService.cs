@@ -3,14 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Resume.Data.IRepositories;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Attachments;
-using Resume.Domain.Entities.Companies;
 using Resume.Domain.Entities.SocialMedias;
 using Resume.Domain.Enums;
 using Resume.Service.DTOs.AttachmentDTOs;
 using Resume.Service.DTOs.SocialMediaDTOs;
 using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
-using Resume.Service.Helpers;
 using Resume.Service.Interfaces;
 using System.Linq.Expressions;
 using State = Resume.Domain.Enums.EntityState;
@@ -110,7 +108,7 @@ public class SocialMediaService : ISocialMediaService
     public async ValueTask<SocialMedia> UpploadAsync(long id, AttachmentForCreationDto dto)
     {
         SocialMedia existSocialMedia = await unitOfWork.SocialMedias.GetAsync(
-            sm => sm.Id == id 
+            sm => sm.Id == id
             && sm.State != State.Deleted);
 
         if (existSocialMedia is null)
@@ -118,7 +116,7 @@ public class SocialMediaService : ISocialMediaService
 
         Attachment checkingAttachment = await unitOfWork.Attachments.GetAsync(
             a => a.Id == existSocialMedia.AttachmentId
-            && a.Type == AttachmentReference.SocialMedia); 
+            && a.Type == AttachmentReference.SocialMedia);
 
         if (checkingAttachment is not null)
             await attachmentService.DeleteAsync(checkingAttachment.Path);

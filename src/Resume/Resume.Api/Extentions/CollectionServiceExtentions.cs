@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Resume.Data.IRepositories;
@@ -7,7 +6,6 @@ using Resume.Data.Repositories;
 using Resume.Service.Helpers;
 using Resume.Service.Interfaces;
 using Resume.Service.Services;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Resume.Api.Extentions;

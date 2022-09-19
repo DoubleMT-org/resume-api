@@ -169,7 +169,7 @@ public class UserService : IUserService
             .FirstOrDefaultAsync();
     }
 
-    public async ValueTask<User> UpdateAsync(long id, UserForUpdateDto user)    
+    public async ValueTask<User> UpdateAsync(long id, UserForUpdateDto user)
     {
         User existUser = await unitOfWork.Users.GetAsync
             (u => u.Id == id && u.State != State.Deleted);

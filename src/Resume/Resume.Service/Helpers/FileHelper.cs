@@ -18,10 +18,10 @@ public class FileHelper
             lastFolderName = WebPath.CompanyImagesPath;
         else if (destination == AttachmentReference.Important)
             lastFolderName = WebPath.ImportantImagesPath;
-        
+
         string filePath = Path.Combine(WebPath.WebRootPath, lastFolderName, name);
         await File.WriteAllBytesAsync(filePath, attachment.Data);
-        
+
         return (name, Path.Combine(lastFolderName, name));
     }
 

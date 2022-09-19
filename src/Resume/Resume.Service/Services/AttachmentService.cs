@@ -41,12 +41,12 @@ public class AttachmentService : IAttachmentService
 
     public async ValueTask<bool> DeleteAsync(string filePath)
     {
-        await unitOfWork.Attachments.DeleteAsync( attachment => attachment.Path == filePath);
+        await unitOfWork.Attachments.DeleteAsync(attachment => attachment.Path == filePath);
 
         await unitOfWork.SaveChangesAsync();
 
         return await fileHelpers.UnsaveAsync(filePath);
     }
-    
+
 }
 

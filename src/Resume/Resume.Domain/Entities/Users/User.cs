@@ -6,7 +6,6 @@ using Resume.Domain.Entities.Projects;
 using Resume.Domain.Entities.Skills;
 using Resume.Domain.Entities.SocialMedias;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
 using System.Text.Json.Serialization;
 
 namespace Resume.Domain.Entities.Users

@@ -6,7 +6,7 @@ namespace Resume.Service.Interfaces;
 public interface IAttachmentService
 {
     ValueTask<Attachment> CreateAsync(
-        AttachmentForCreationDto attachment, 
+        AttachmentForCreationDto attachment,
         long Id,
         AttachmentReference destinationImage);
 

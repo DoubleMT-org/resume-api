@@ -10,7 +10,7 @@ namespace Resume.Domain.Entities.SocialMedias
         [MaxLength(32)]
         public string Name { get; set; }
         public string Url { get; set; }
-        
+
         public int? AttachmentId { get; set; }
 
         public long? UserId { get; set; }

@@ -1,5 +1,4 @@
-﻿using Resume.Domain.Entities.Users;
-using Resume.Domain.Enums;
+﻿using Resume.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Resume.Domain.Entities.Attachments

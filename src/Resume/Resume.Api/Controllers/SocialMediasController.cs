@@ -2,11 +2,8 @@
 using Resume.Api.Helpers;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.SocialMedias;
-using Resume.Domain.Entities.SocialMedias;
-using Resume.Service.DTOs.SocialMediaDTOs;
 using Resume.Service.DTOs.SocialMediaDTOs;
 using Resume.Service.Interfaces;
-using Resume.Service.Services;
 
 namespace Resume.Api.Controllers;
 public class SocialMediasController : BaseController
@@ -40,6 +37,6 @@ public class SocialMediasController : BaseController
 
     [HttpPost("Attachments/{Id}")]
     public async ValueTask<ActionResult<SocialMedia>> UploadLogoAsync([FromRoute(Name = "Id")] long id, IFormFile formFile) =>
-        Ok(await socialMediaService.UpploadAsync(id, formFile.GetAsAttachment())); 
+        Ok(await socialMediaService.UpploadAsync(id, formFile.GetAsAttachment()));
 
 }

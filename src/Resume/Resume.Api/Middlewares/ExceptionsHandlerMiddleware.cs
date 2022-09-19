@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Resume.Service.Exceptions;
-using System.Threading.Tasks;
+﻿using Resume.Service.Exceptions;
 
 namespace Resume.Api.Middlewares
 {

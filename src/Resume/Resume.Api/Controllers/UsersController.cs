@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Users;
 using Resume.Service.DTOs.UserDTOs;
@@ -10,7 +9,7 @@ namespace Resume.Api.Controllers;
 
 public class UsersController : BaseController
 {
-    #pragma warning disable
+#pragma warning disable
     private readonly IUserService userService;
 
     public UsersController(IUserService userService)
@@ -31,11 +30,11 @@ public class UsersController : BaseController
         Ok(await userService.GetAsync(user => user.Id == id));
 
     [HttpGet]
-    public async ValueTask<ActionResult<IEnumerable<User>>> GetAllAsync([FromQuery]PagenationParams @params) =>
+    public async ValueTask<ActionResult<IEnumerable<User>>> GetAllAsync([FromQuery] PagenationParams @params) =>
         Ok(await userService.GetAllAsync(@params));
 
     [HttpDelete("{Id}")]
-    public async ValueTask<ActionResult<bool>> DeleteAdsync([FromRoute(Name = "Id")] long id) =>
+    public async ValueTask<ActionResult<bool>> DeleteAsync([FromRoute(Name = "Id")] long id) =>
         Ok(await userService.DeleteAsync(user => user.Id == id));
 
     [HttpGet("Full")]

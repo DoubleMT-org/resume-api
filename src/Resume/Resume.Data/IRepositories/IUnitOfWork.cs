@@ -1,5 +1,4 @@
-﻿using Resume.Domain.Entities.Attachments;
-using Resume.Domain.Entities.Companies;
+﻿using Resume.Domain.Entities.Companies;
 using Resume.Domain.Entities.Educations;
 using Resume.Domain.Entities.Languages;
 using Resume.Domain.Entities.Projects;
