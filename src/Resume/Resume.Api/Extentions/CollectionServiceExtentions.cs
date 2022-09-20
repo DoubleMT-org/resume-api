@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Resume.Data.IRepositories;
 using Resume.Data.Repositories;
 using Resume.Service.Helpers;
@@ -28,25 +30,63 @@ public static class CollectionServiceExtentions
 
     public static void AddJwtService(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication(x =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
         {
-            x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-        }).AddJwtBearer(p =>
-        {
-            var key = Encoding.UTF8.GetBytes(configuration["JWT:Key"]);
-            p.SaveToken = true;
-            p.TokenValidationParameters = new TokenValidationParameters
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["JWT:Issuer"],
                 ValidAudience = configuration["JWT:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(key)
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
             };
         });
+    }
+
+    public static void AddSwaggerService(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(swagger =>
+        {
+            //This is to generate the Default UI of Swagger Documentation
+            swagger.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "ASP.NET 5 Web API",
+                Description = "Authentication and Authorization in ASP.NET 5 with JWT and Swagger"
+            });
+
+            // To Enable authorization using Swagger (JWT)
+            swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Enter ‘Bearer’ [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+            });
+
+            swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+             });
+
+        });
+        
+        services.AddSwaggerGenNewtonsoftSupport();
     }
 
 }

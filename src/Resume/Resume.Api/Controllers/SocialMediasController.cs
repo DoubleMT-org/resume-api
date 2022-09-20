@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Resume.Api.Helpers;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.SocialMedias;
@@ -6,6 +7,8 @@ using Resume.Service.DTOs.SocialMediaDTOs;
 using Resume.Service.Interfaces;
 
 namespace Resume.Api.Controllers;
+
+[Authorize]
 public class SocialMediasController : BaseController
 {
     private readonly ISocialMediaService socialMediaService;

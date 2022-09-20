@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Users;
 using Resume.Service.DTOs.UserDTOs;
@@ -7,17 +8,19 @@ using Resume.Service.Interfaces;
 
 namespace Resume.Api.Controllers;
 
+#pragma warning disable
+[Authorize]
 public class UsersController : BaseController
 {
-#pragma warning disable
     private readonly IUserService userService;
-
-    public UsersController(IUserService userService)
+    private readonly IConfiguration configuration;
+    public UsersController(IUserService userService, IConfiguration configuration)
     {
         this.userService = userService;
+        this.configuration = configuration;
     }
 
-    [HttpPost]
+    [HttpPost, Authorize(Roles = "Admin")]
     public async ValueTask<ActionResult<User>> CreateAsync(UserForCreationDto dto) =>
          Ok(await userService.CreateAsync(dto));
 
@@ -29,28 +32,34 @@ public class UsersController : BaseController
     public async ValueTask<ActionResult<User>> GetAsync([FromRoute(Name = "Id")] long id) =>
         Ok(await userService.GetAsync(user => user.Id == id));
 
-    [HttpGet]
+    [HttpGet, Authorize]
     public async ValueTask<ActionResult<IEnumerable<User>>> GetAllAsync([FromQuery] PagenationParams @params) =>
-        Ok(await userService.GetAllAsync(@params));
+        Ok(await userService.GetAllAsync(@params)); 
 
-    [HttpDelete("{Id}")]
+    [HttpDelete("{Id}"), Authorize(Roles = "Admin")]
     public async ValueTask<ActionResult<bool>> DeleteAsync([FromRoute(Name = "Id")] long id) =>
         Ok(await userService.DeleteAsync(user => user.Id == id));
 
-    [HttpGet("Full")]
+    [HttpGet("Full"), Authorize(Roles = "Admin")]
     public async ValueTask<ActionResult<IEnumerable<User>>> GetAllFullyAsync([FromQuery] PagenationParams @params) =>
         Ok(await userService.GetAllFullyAsync(@params));
 
-    [HttpPost("Change/Password")]
+    [HttpPost("Change/Password"), Authorize]
     public async ValueTask<ActionResult<User>> ChangePasswordAsync(UserForChangePassword dto) =>
         Ok(await userService.ChangePasswordAsync(dto));
 
-    [HttpPatch("{Id}")]
-    public async ValueTask<ActionResult<User>> UpdateAsync([FromRoute(Name = "Id")] long id, UserForUpdateDto dto) =>
-        Ok(await userService.UpdateAsync(id, dto));
+    [HttpPut("{Id}"), Authorize(Roles = "Admin")]
+    public async ValueTask<ActionResult<User>> UpdateAsync([FromRoute(Name = "Id")] long id,[FromBody] UserForUpdateDto dto) =>
+        Ok(await userService.UpdateAsync( dto, id));
+
+    [HttpPut, Authorize]
+    public async ValueTask<ActionResult<User>> UpdateAsync([FromBody] UserForUpdateDto dto) =>
+        Ok(await userService.UpdateAsync( user: dto));
+
 
     [HttpPost("Login")]
+    [AllowAnonymous]
     public async ValueTask<ActionResult<UserTokenViewModel>> CheckLogin(UserForLoginDto dto) =>
-        Ok(userService.CheckLoginAsync(dto));
+        Ok(userService.CheckLoginAsync(dto, configuration));
 
 }

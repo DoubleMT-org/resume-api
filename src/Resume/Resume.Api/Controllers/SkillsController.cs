@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Skills;
 using Resume.Service.DTOs.SkillDTOs;
@@ -6,6 +7,7 @@ using Resume.Service.Interfaces;
 
 namespace Resume.Api.Controllers
 {
+    [Authorize]
     public class SkillsController : BaseController
     {
         private readonly ISkillService skillService;

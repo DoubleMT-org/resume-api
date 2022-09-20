@@ -8,8 +8,6 @@ public class UserForLoginDto
     [Required(ErrorMessage = "Email must not be null or empty!")]
     public string EmailOrPhone { get; set; }
 
-    [MinLength(8, ErrorMessage = "Password must not be longer than 8")]
-    [MaxLength(15, ErrorMessage = "Password must not be less 15!")]
     [Required(ErrorMessage = "Password must not be null or empty!")]
     public string Password { get; set; }
 

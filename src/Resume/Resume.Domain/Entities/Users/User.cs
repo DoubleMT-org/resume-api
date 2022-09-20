@@ -5,6 +5,7 @@ using Resume.Domain.Entities.Languages;
 using Resume.Domain.Entities.Projects;
 using Resume.Domain.Entities.Skills;
 using Resume.Domain.Entities.SocialMedias;
+using Resume.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -26,6 +27,8 @@ namespace Resume.Domain.Entities.Users
 
         [MaxLength(256), Required, JsonIgnore]
         public string Password { get; set; }
+
+        public UserRole Role { get; set; } = UserRole.Client;
 
         public ICollection<Skill> Skills { get; set; }
 

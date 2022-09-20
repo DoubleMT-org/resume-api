@@ -9,6 +9,7 @@ using Resume.Service.DTOs.AttachmentDTOs;
 using Resume.Service.DTOs.SocialMediaDTOs;
 using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
+using Resume.Service.Helpers;
 using Resume.Service.Interfaces;
 using System.Linq.Expressions;
 using State = Resume.Domain.Enums.EntityState;
@@ -62,9 +63,14 @@ public class SocialMediaService : ISocialMediaService
         (PagenationParams @params,
         Expression<Func<SocialMedia, bool>> expression = null)
     {
-        return await unitOfWork.SocialMedias.GetAll(expression, false)
-                                            .ToPagedList(@params)
-                                            .ToListAsync();
+        var socialMedias = unitOfWork.SocialMedias.GetAll(expression, false)
+                                            .ToPagedList(@params);
+
+        if (HttpContextHelper.UserRole == "Admin")
+            return await socialMedias.ToListAsync();
+
+        return await socialMedias.Where(sm => sm.UserId == HttpContextHelper.UserId)
+                                .ToListAsync();
     }
 
     public async ValueTask<SocialMedia> GetAsync(Expression<Func<SocialMedia, bool>> expression)
@@ -72,6 +78,9 @@ public class SocialMediaService : ISocialMediaService
         var existSocialMedia = await unitOfWork.SocialMedias.GetAsync(expression);
 
         if (existSocialMedia is null || existSocialMedia.State == State.Deleted)
+            throw new EventException(404, "Social media not found.");
+
+        if (HttpContextHelper.UserRole != "Admin" && existSocialMedia.UserId != HttpContextHelper.UserId)
             throw new EventException(404, "Social media not found.");
 
         return existSocialMedia;

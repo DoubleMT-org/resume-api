@@ -5,10 +5,12 @@ using Microsoft.IdentityModel.Tokens;
 using Resume.Data.IRepositories;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Users;
+using Resume.Domain.Enums;
 using Resume.Service.DTOs.UserDTOs;
 using Resume.Service.DTOs.Users;
 using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
+using Resume.Service.Helpers;
 using Resume.Service.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
@@ -35,7 +37,7 @@ public class UserService : IUserService
             (user => user.Email == dto.EmailOrPhone
             || user.Phone == dto.EmailOrPhone
             && user.State != State.Deleted);
-
+        
         if (existUser is null)
             throw new EventException(404, "This email or phone is not exists");
 
@@ -54,37 +56,26 @@ public class UserService : IUserService
         return existUser;
     }
 
-    public async ValueTask<UserTokenViewModel> CheckLoginAsync(UserForLoginDto dto)
+    public async ValueTask<UserTokenViewModel> CheckLoginAsync(UserForLoginDto dto, IConfiguration _configuration)
     {
+        if (dto.EmailOrPhone == _configuration["Admin:Login"] && dto.Password == _configuration["Admin:Password"])
+        {
+           var result = GenerateToken(-1, UserRole.Admin, _configuration);
+
+            return new UserTokenViewModel(result);
+        }
+
         User existUser = await unitOfWork.Users.GetAsync
             (user => user.Email == dto.EmailOrPhone
             || user.Phone == dto.EmailOrPhone
             && user.State != State.Deleted);
 
         if (existUser is null)
-            throw new EventException(404, "This email or phone is not exists");
+            throw new EventException(400, "Login or password is incorrect!");
 
-        else if (existUser.Password != dto.Password.GetHashVersion())
-            throw new EventException(400, "Password is incorrect!");
+        string mainToken = GenerateToken(existUser.Id, existUser.Role, _configuration);
 
-        #region Else we generate JSON Web Token
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var tokenKey = Encoding.UTF8.GetBytes(configuration["JWT:Key"]);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim("Id", existUser.Id.ToString()),
-            }),
-            Expires = DateTime.UtcNow.AddMinutes(10),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
-        };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-
-        #endregion
-
-        return new UserTokenViewModel(tokenHandler.WriteToken(token));
+        return new UserTokenViewModel(mainToken);
     }
 
     public async ValueTask<User> CreateAsync(UserForCreationDto user)
@@ -169,8 +160,11 @@ public class UserService : IUserService
             .FirstOrDefaultAsync();
     }
 
-    public async ValueTask<User> UpdateAsync(long id, UserForUpdateDto user)
+    public async ValueTask<User> UpdateAsync(UserForUpdateDto user, long id = 0)
     {
+        if (id == 0)
+            id = HttpContextHelper.UserId ?? 0;
+
         User existUser = await unitOfWork.Users.GetAsync
             (u => u.Id == id && u.State != State.Deleted);
         if (existUser is null)
@@ -190,5 +184,26 @@ public class UserService : IUserService
         await unitOfWork.SaveChangesAsync();
 
         return updatedUser;
+    }
+
+    private string GenerateToken(long id, UserRole role, IConfiguration _configuration )
+    {
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+
+        var claims = new Claim[]
+        {
+            new Claim("Id", id.ToString()),
+            new Claim(ClaimTypes.Role, role.ToString()),
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["JWT:Issuer"],
+            audience: _configuration["JWT:Audience"],
+            expires: DateTime.Now.AddHours(12),
+            claims: claims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

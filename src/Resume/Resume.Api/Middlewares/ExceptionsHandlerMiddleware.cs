@@ -12,7 +12,7 @@ namespace Resume.Api.Middlewares
         {
             _next = next;
             _logger = logger;
-        }
+            }
 
         public async Task Invoke(HttpContext httpContext)
         {

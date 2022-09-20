@@ -1,4 +1,5 @@
-﻿using Resume.Domain.Configurations;
+﻿using Microsoft.Extensions.Configuration;
+using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Users;
 using Resume.Service.DTOs.UserDTOs;
 using Resume.Service.DTOs.Users;
@@ -15,8 +16,8 @@ public interface IUserService
 
     ValueTask<bool> DeleteAsync(Expression<Func<User, bool>> expression);
     ValueTask<User> CreateAsync(UserForCreationDto user);
-    ValueTask<User> UpdateAsync(long id, UserForUpdateDto user);
+    ValueTask<User> UpdateAsync(UserForUpdateDto user, long id = 0);
 
     ValueTask<User> ChangePasswordAsync(UserForChangePassword dto);
-    ValueTask<UserTokenViewModel> CheckLoginAsync(UserForLoginDto dto);
+    ValueTask<UserTokenViewModel> CheckLoginAsync(UserForLoginDto dto, IConfiguration configuration);
 }
