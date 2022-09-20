@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Resume.Api.Controllers;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Users;
@@ -14,11 +15,12 @@ namespace Resume.UnitTest.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly UsersController _userController;
-
+        private readonly IConfiguration _configuration;
         public UserControllerTests()
         {
+            _configuration = A.Fake<IConfiguration>();
             _userService = A.Fake<IUserService>();
-            _userController = new UsersController(_userService);
+            _userController = new UsersController(_userService,_configuration);
         }
 
         [Theory]

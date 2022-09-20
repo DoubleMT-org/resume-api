@@ -12,6 +12,4 @@ public class SocialMediaForCreationDto
     [Required(AllowEmptyStrings = false, ErrorMessage = "Url must not be null or empty!")]
     public string Url { get; set; }
 
-    [Required(ErrorMessage = "User id must not be null.")]
-    public long? UserId { get; set; }
 }

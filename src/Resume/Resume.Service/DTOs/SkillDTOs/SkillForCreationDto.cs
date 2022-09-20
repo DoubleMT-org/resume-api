@@ -10,8 +10,4 @@ public class SkillForCreationDto
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "Persantage must not be null or empty!")]
     public int Persantage { get; set; }
-
-    [Required(ErrorMessage = "User id must not be null.")]
-    public long? UserId { get; set; }
-
 }

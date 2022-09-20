@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Resume.Data.IRepositories;
 using Resume.Domain.Configurations;
 using Resume.Domain.Entities.Skills;
+using Resume.Domain.Entities.SocialMedias;
 using Resume.Service.DTOs.SkillDTOs;
 using Resume.Service.Exceptions;
 using Resume.Service.Extentions;
+using Resume.Service.Helpers;
 using Resume.Service.Interfaces;
 using System.Linq.Expressions;
 using State = Resume.Domain.Enums.EntityState;
@@ -14,22 +16,23 @@ namespace Resume.Service.Services;
 public class SkillService : ISkillService
 {
     private readonly IUnitOfWork unitOfWork;
-
     public SkillService(IUnitOfWork unitOfWork)
     {
         this.unitOfWork = unitOfWork;
     }
+
     public async ValueTask<Skill> CreateAsync(SkillForCreationDto skill)
     {
         Skill existSkill = await unitOfWork.Skills.GetAsync(
            s => s.Name == skill.Name
-            && s.UserId == skill.UserId
+            && s.UserId == HttpContextHelper.UserId
             && s.State != State.Deleted);
 
         if (existSkill is not null)
-            throw new EventException(400, "Thisskill is already exists.");
+            throw new EventException(400, "This skill is already exists.");
 
         var mappedSkill = skill.Adapt<Skill>();
+        mappedSkill.UserId = HttpContextHelper.UserId;
         mappedSkill.Create();
 
         var newSkill = await unitOfWork.Skills.CreateAsync(mappedSkill);
@@ -42,7 +45,7 @@ public class SkillService : ISkillService
     {
         Skill existSkill = await unitOfWork.Skills.GetAsync(expression);
 
-        if (existSkill is null || existSkill.State == State.Deleted)
+        if (existSkill is null || existSkill.State == State.Deleted && existSkill.UserId != HttpContextHelper.UserId)
             throw new EventException(404, "This skill not found.");
 
         existSkill.Delete();
@@ -55,10 +58,15 @@ public class SkillService : ISkillService
         PagenationParams @params,
         Expression<Func<Skill, bool>> expression = null)
     {
-        return await unitOfWork.Skills.GetAll(expression, false)
-                                            .ToPagedList(@params)
-                                                .ToListAsync();
-    }
+        var skills = unitOfWork.Skills.GetAll(expression, false)
+                                            .ToPagedList(@params);
+
+        if (HttpContextHelper.UserRole == "Admin")
+            return await skills.ToListAsync();
+
+        return await skills.Where(sm => sm.UserId == HttpContextHelper.UserId)
+                                .ToListAsync();
+    } 
 
     public async ValueTask<Skill> GetAsync(Expression<Func<Skill, bool>> expression)
     {
@@ -66,6 +74,9 @@ public class SkillService : ISkillService
 
         if (existSkill is null || existSkill.State == State.Deleted)
             throw new EventException(404, "Skill not found");
+
+        if (HttpContextHelper.UserRole != "Admin" && existSkill.UserId != HttpContextHelper.UserId)
+            throw new EventException(404, "Social media not found.");
 
         return existSkill;
     }

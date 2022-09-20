@@ -29,16 +29,17 @@ public class SocialMediaService : ISocialMediaService
     public async ValueTask<SocialMedia> CreateAsync(SocialMediaForCreationDto socialMedia)
     {
         SocialMedia existSocialMedia = await unitOfWork.SocialMedias.GetAsync(
-            sm => sm.Name == socialMedia.Name
-            || sm.Url == socialMedia.Url
-            && sm.UserId == socialMedia.UserId
-            && sm.State == State.Deleted);
+            sm =>
+            sm.Url == socialMedia.Url
+            && sm.UserId == HttpContextHelper.UserId
+            && sm.State != State.Deleted);
 
         if (existSocialMedia is not null)
             throw new EventException(400, "This social media is already exists.");
 
         var mappedSocialMedia = socialMedia.Adapt<SocialMedia>();
         mappedSocialMedia.Create();
+        mappedSocialMedia.UserId = HttpContextHelper.UserId;
 
         var newSocialMedia = await unitOfWork.SocialMedias.CreateAsync(mappedSocialMedia);
         await unitOfWork.SaveChangesAsync();
@@ -50,7 +51,9 @@ public class SocialMediaService : ISocialMediaService
     {
         SocialMedia existSocialMedia = await unitOfWork.SocialMedias.GetAsync(expression);
 
-        if (existSocialMedia is null || existSocialMedia.State == State.Deleted)
+        if (existSocialMedia is null 
+            || existSocialMedia.State == State.Deleted 
+            && existSocialMedia.UserId != HttpContextHelper.UserId)
             throw new EventException(404, "This social media not found.");
 
         existSocialMedia.Delete();

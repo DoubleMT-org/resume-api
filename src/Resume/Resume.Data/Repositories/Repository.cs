@@ -18,7 +18,7 @@ namespace Resume.Data.Repositories
         }
 
         public async Task<TSourse> CreateAsync(TSourse extity)
-            => (await dbSet.AddAsync(extity)).Entity;
+            => (await dbSet.AddAsync(extity)).Entity;   
 
         public async Task<bool> DeleteAsync(Expression<Func<TSourse, bool>> expression)
         {
